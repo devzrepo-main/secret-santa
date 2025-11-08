@@ -7,14 +7,14 @@ $(function () {
     const html = `
       <div class="card shadow-sm mb-4">
         <div class="card-body">
-          <h5 class="card-title mb-3 text-success">Claim Your Secret Santa</h5>
+          <h5 class="card-title mb-3 text-success">Secret Santa</h5>
           <form id="claimForm" class="row g-3">
             <div class="col-md-6">
               <label class="form-label">Your name</label>
               <input type="text" class="form-control" id="memberName" placeholder="Type your name" />
             </div>
             <div class="col-md-6">
-              <label class="form-label">Who is your Secret Santa?</label>
+              <label class="form-label">Who are you assigned as Secret Santa to?</label>
               <input type="text" class="form-control" id="assignedTo" placeholder="Type the name you drew" />
             </div>
             <div class="col-12 d-grid">
@@ -156,3 +156,4 @@ $(function () {
   renderMember();
   renderAdminLogin();
 });
+
