@@ -39,7 +39,7 @@
   <?php endfor; ?>
 
   <div class="container text-center py-5">
-    <h1 class="display-4 fw-bold text-christmas mt-4">🎅 Welcome to the Secret Santa Christmas Edition 🎄</h1>
+    <h1 class="display-4 fw-bold text-christmas mt-4"> A Warm Christmas Welcome!</h1>
     <p class="lead text-light">Spread joy, share gifts, and enjoy the holiday magic!</p>
 
     <div id="memberSection" class="mt-5"></div>
@@ -60,4 +60,5 @@
   </footer>
 </body>
 </html>
+
 
