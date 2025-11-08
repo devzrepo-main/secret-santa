@@ -136,41 +136,125 @@ $(function () {
     });
   }
 
-  // ---------- Admin Final Reveal ----------
-  // ---------- Admin Final Reveal (Password Protected) ----------
-  function renderReveal() {
+  // ---------- Admin: Secure Login + Manage Family Members ----------
+  function renderAdmin() {
     const html = `
-      <div id="revealSection" class="card shadow-sm mt-4 border-danger">
+      <div id="adminSection" class="card shadow-sm mb-4 mt-4">
         <div class="card-body">
-          <h5 class="card-title text-danger">Alex's Reveal</h5>
-          <button id="revealBtn" class="btn btn-success">Reveal Remaining Name</button>
-          <div id="revealMsg" class="mt-3"></div>
+          <h5 class="card-title mb-3 text-danger" style="text-shadow: 1px 1px 3px #fff;">Admin Panel</h5>
+          <button id="adminLogin" class="btn btn-success mb-3">Admin Login</button>
+          <div id="adminContent" style="display:none;">
+            <form id="addForm" class="row g-2">
+              <div class="col-sm-8">
+                <input type="text" class="form-control" id="addName" placeholder="Enter a name (e.g., Alice)" />
+              </div>
+              <div class="col-sm-4 d-grid">
+                <button class="btn btn-success" type="submit">Add</button>
+              </div>
+            </form>
+            <div id="adminMsg" class="mt-2 small"></div>
+            <div id="adminList" class="mt-3"></div>
+          </div>
         </div>
       </div>`;
-    // Make sure it renders BEFORE the admin section now
-    $('#adminSection').before(html);
+    $('#adminWrapper').html(html);
 
-    $('#revealBtn').on('click', function () {
+    let adminLoggedIn = false;
+
+    // --- Admin Login ---
+    $('#adminLogin').on('click', function () {
       const password = prompt('Enter the admin password:');
       if (!password) return;
 
-      $.post(API, { action: 'reveal_final', password }, function (res) {
+      $.post(API, { action: 'admin_login', password }, function (res) {
         if (res.ok) {
-          $('#revealMsg').html(`<h5 class="text-success">🎁 The last remaining name is: <b>${res.final_unclaimed}</b></h5>`);
+          adminLoggedIn = true;
+          $('#adminLogin').hide();
+          $('#adminContent').slideDown();
+          refreshList();
         } else {
-          $('#revealMsg').html(`<span class="text-danger">${res.error || 'Error checking remaining name.'}</span>`);
+          alert('Invalid admin password.');
+        }
+      }, 'json').fail(() => alert('Network error.'));
+    });
+
+    // --- Add Member ---
+    $('#adminSection').on('submit', '#addForm', function (e) {
+      e.preventDefault();
+      if (!adminLoggedIn) {
+        $('#adminMsg').html(`<span class="text-danger">Please log in first.</span>`);
+        return;
+      }
+
+      const name = ($('#addName').val() || '').trim();
+      if (!name) {
+        $('#adminMsg').html(`<span class="text-danger">Please enter a name.</span>`);
+        return;
+      }
+
+      $.post(API, { action: 'add_member', name, password: 'Secret123' }, function (res) {
+        if (res.ok) {
+          $('#adminMsg').html(`<span class="text-success">${res.message}</span>`);
+          $('#addName').val('');
+          refreshList();
+        } else {
+          $('#adminMsg').html(`<span class="text-danger">${res.error || 'Error adding name.'}</span>`);
         }
       }, 'json').fail(() => {
-        $('#revealMsg').html(`<span class="text-danger">Network error.</span>`);
+        $('#adminMsg').html(`<span class="text-danger">Network error.</span>`);
       });
     });
+
+    // --- Remove Member (❌ button) ---
+    $('#adminSection').on('click', '.removeBtn', function () {
+      const name = $(this).data('name');
+      if (!confirm(`Remove "${name}" from the list?`)) return;
+
+      $.post(API, { action: 'remove_member', name, password: 'Secret123' }, function (res) {
+        if (res.ok) {
+          $('#adminMsg').html(`<span class="text-success">${res.message}</span>`);
+          refreshList();
+        } else {
+          $('#adminMsg').html(`<span class="text-danger">${res.error || 'Error removing name.'}</span>`);
+        }
+      }, 'json').fail(() => {
+        $('#adminMsg').html(`<span class="text-danger">Network error.</span>`);
+      });
+    });
+
+    // --- Refresh List of Members ---
+    function refreshList() {
+      $.getJSON(API, { action: 'status' }, function (res) {
+        if (res.ok) {
+          const members = res.remaining;
+          if (members.length === 0) {
+            $('#adminList').html('<p class="text-muted mt-2">No family members added yet.</p>');
+          } else {
+            const list = members.map(n => `
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                ${n}
+                <button class="btn btn-sm btn-outline-danger removeBtn" data-name="${n}">❌ Remove</button>
+              </li>`).join('');
+            $('#adminList').html(`
+              <ul class="list-group list-group-flush mt-3">${list}</ul>
+            `);
+          }
+        } else {
+          $('#adminList').html('<p class="text-danger mt-2">Error loading member list.</p>');
+        }
+      }).fail(() => {
+        $('#adminList').html('<p class="text-danger mt-2">Network error loading list.</p>');
+      });
+    }
   }
+
 
 
   renderMember();
   renderReveal();
   renderAdmin();
 });
+
 
 
 
