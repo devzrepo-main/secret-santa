@@ -1,20 +1,87 @@
 $(function () {
   const API = 'api/api.php';
-  let adminKey = ''; // stores password after login for this session
 
-  // ---------- MEMBER SECTION ----------
-  function renderMember() {
+  // ---------- Admin: Manage Family Members (View + Add)
+  function renderAdmin() {
     const html = `
       <div class="card shadow-sm mb-4">
         <div class="card-body">
-          <h5 class="card-title mb-3 text-success">Secret Santa</h5>
+          <h5 class="card-title mb-3">Admin: Manage Family Members</h5>
+          <form id="addForm" class="row g-2">
+            <div class="col-sm-8">
+              <input type="text" class="form-control" id="addName" placeholder="Enter a name (e.g., Alice)" />
+            </div>
+            <div class="col-sm-4 d-grid">
+              <button class="btn btn-success" type="submit">Add</button>
+            </div>
+          </form>
+          <div id="adminMsg" class="mt-2 small"></div>
+          <div id="adminList" class="mt-3"></div>
+        </div>
+      </div>`;
+    $('#adminSection').html(html);
+
+    // Add member
+    $('#addForm').on('submit', function (e) {
+      e.preventDefault();
+      const name = ($('#addName').val() || '').trim();
+      if (!name) {
+        $('#adminMsg').html(`<span class="text-danger">Please enter a name.</span>`);
+        return;
+      }
+
+      $.post(API, { action: 'add_member', name }, function (res) {
+        if (res.ok) {
+          $('#adminMsg').html(`<span class="text-success">${res.message}</span>`);
+          $('#addName').val('');
+          refreshList();
+        } else {
+          $('#adminMsg').html(`<span class="text-danger">${res.error || 'Error adding name.'}</span>`);
+        }
+      }, 'json').fail(() => {
+        $('#adminMsg').html(`<span class="text-danger">Network error.</span>`);
+      });
+    });
+
+    // Load list of members
+    function refreshList() {
+      $.getJSON(API, { action: 'status' }, function (res) {
+        if (res.ok) {
+          const names = res.remaining;
+          if (names.length === 0) {
+            $('#adminList').html('<p class="text-muted mt-2">No family members added yet.</p>');
+          } else {
+            const list = names.map(n => `<li class="list-group-item">${n}</li>`).join('');
+            $('#adminList').html(`
+              <ul class="list-group list-group-flush mt-3">
+                ${list}
+              </ul>
+            `);
+          }
+        } else {
+          $('#adminList').html('<p class="text-danger mt-2">Unable to load members.</p>');
+        }
+      }).fail(() => {
+        $('#adminList').html('<p class="text-danger mt-2">Network error loading members.</p>');
+      });
+    }
+
+    refreshList();
+  }
+
+  // ---------- Member: Claim Secret Santa ----------
+  function renderMember() {
+    const html = `
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title mb-3 text-success" style="text-shadow: 1px 1px 2px #000;">Merry Christmas!</h5>
           <form id="claimForm" class="row g-3">
             <div class="col-md-6">
-              <label class="form-label">Your name</label>
+              <label class="form-label">Your name (The Secret Santa)</label>
               <input type="text" class="form-control" id="memberName" placeholder="Type your name" />
             </div>
             <div class="col-md-6">
-              <label class="form-label">Who were you assigned as Secret Santa to?</label>
+              <label class="form-label">The person you were assigned to</label>
               <input type="text" class="form-control" id="assignedTo" placeholder="Type the name you drew" />
             </div>
             <div class="col-12 d-grid">
@@ -22,9 +89,7 @@ $(function () {
             </div>
           </form>
           <div id="memberMsg" class="mt-2"></div>
-          <p class="mt-3 text-muted small">
-            If there are duplicate names please use a last initial. Names are removed from the pool as soon as they’re claimed. No list is shown.
-          </p>
+          <p class="mt-3 text-muted small">Names are removed from the pool once claimed. No list is shown.</p>
         </div>
       </div>`;
     $('#memberSection').html(html);
@@ -37,6 +102,7 @@ $(function () {
         $('#memberMsg').html(`<span class="text-danger">Please fill in both fields.</span>`);
         return;
       }
+
       $.post(API, { action: 'claim', member, assigned_to }, function (res) {
         if (res.ok) {
           $('#memberMsg').html(`<span class="text-success">${res.message}</span>`);
@@ -44,117 +110,41 @@ $(function () {
         } else {
           $('#memberMsg').html(`<span class="text-danger">${res.error || 'Error saving claim.'}</span>`);
         }
-      }, 'json').fail(() =>
-        $('#memberMsg').html(`<span class="text-danger">Network error.</span>`)
-      );
+      }, 'json').fail(() => {
+        $('#memberMsg').html(`<span class="text-danger">Network error.</span>`);
+      });
     });
   }
 
-  // ---------- ADMIN LOGIN ----------
-  function renderAdminLogin() {
+  // ---------- Admin Final Reveal ----------
+  function renderReveal() {
     const html = `
-      <div class="card shadow-sm mb-4">
-        <div class="card-body text-center">
-          <h5 class="card-title mb-3 text-danger">Alex's Console</h5>
-          <p>Manage family members and reveal the final Secret Santa.</p>
-          <button id="adminLoginBtn" class="btn btn-success">Admin Login</button>
-          <div id="adminLoginMsg" class="mt-2"></div>
-          <div id="adminPanel" class="mt-4"></div>
+      <div class="card shadow-sm mt-4 border-danger">
+        <div class="card-body">
+          <h5 class="card-title text-danger">Final Reveal (Admin Only)</h5>
+          <button id="revealBtn" class="btn btn-success">Reveal Remaining Name</button>
+          <div id="revealMsg" class="mt-3"></div>
         </div>
       </div>`;
-    $('#adminSection').html(html);
+    $('#adminSection').append(html);
 
-    $('#adminLoginBtn').on('click', function () {
-      const key = prompt('Enter the admin password:');
-      if (key) {
-        adminKey = key;
-        $('#adminLoginMsg').html(`<span class="text-success">✅ Login successful!</span>`);
-        renderAdminPanel();
-      }
-    });
-  }
-
-  // ---------- ADMIN PANEL ----------
-  function renderAdminPanel() {
-    const html = `
-      <h5 class="text-danger mb-3">Manage Family Members</h5>
-      <form id="addForm" class="row g-2 mb-3">
-        <div class="col-sm-8">
-          <input type="text" class="form-control" id="addName" placeholder="Enter a name (e.g., Alice)" />
-        </div>
-        <div class="col-sm-4 d-grid">
-          <button class="btn btn-success" type="submit">Add</button>
-        </div>
-      </form>
-      <div id="adminMsg" class="mb-3 small"></div>
-      <div id="adminStatus" class="text-muted small"></div>
-      <hr />
-      <button id="revealBtn" class="btn btn-success">Reveal Remaining Name</button>
-      <div id="revealMsg" class="mt-3"></div>
-      <hr />
-      <button id="logoutBtn" class="btn btn-outline-danger btn-sm mt-2">Logout Admin</button>`;
-    $('#adminPanel').html(html);
-
-    // ---------- Add Member ----------
-    $('#addForm').on('submit', function (e) {
-      e.preventDefault();
-      const name = ($('#addName').val() || '').trim();
-      if (!name) { $('#adminMsg').text('Please enter a name.'); return; }
-      if (!adminKey) { $('#adminMsg').text('Please login as admin first.'); return; }
-
-      $.post(API, { action: 'add_member', name, adminKey }, function (res) {
-        if (res.ok) {
-          $('#adminMsg').html(`<span class="text-success">${res.message}</span>`);
-          $('#addName').val('');
-          refreshStatus();
-        } else {
-          $('#adminMsg').html(`<span class="text-danger">${res.error || 'Error adding name.'}</span>`);
-        }
-      }, 'json').fail(() =>
-        $('#adminMsg').html(`<span class="text-danger">Network error.</span>`)
-      );
-    });
-
-    // ---------- Reveal Button ----------
     $('#revealBtn').on('click', function () {
-      if (!adminKey) {
-        $('#revealMsg').html(`<span class="text-danger">Login first.</span>`);
-        return;
-      }
-      $.post(API, { action: 'reveal_final', password: adminKey }, function (res) {
+      const password = prompt('Enter the admin password:');
+      if (!password) return;
+
+      $.post(API, { action: 'reveal_final', password }, function (res) {
         if (res.ok) {
           $('#revealMsg').html(`<h5 class="text-success">🎁 The last remaining name is: <b>${res.final_unclaimed}</b></h5>`);
         } else {
           $('#revealMsg').html(`<span class="text-danger">${res.error || 'Error checking remaining name.'}</span>`);
         }
-      }, 'json').fail(() =>
-        $('#revealMsg').html(`<span class="text-danger">Network error.</span>`)
-      );
-    });
-
-    // ---------- Logout ----------
-    $('#logoutBtn').on('click', function () {
-      adminKey = '';
-      $('#adminPanel').html('');
-      $('#adminLoginMsg').html(`<span class="text-warning">Logged out.</span>`);
-    });
-
-    // ---------- Status ----------
-    function refreshStatus() {
-      $.getJSON(API, { action: 'status' }, function (res) {
-        if (res.ok) {
-          $('#adminStatus').html(
-            `Total: ${res.total} | Assigned: ${res.assigned} | Remaining: ${res.remaining.join(', ')}`
-          );
-        }
+      }, 'json').fail(() => {
+        $('#revealMsg').html(`<span class="text-danger">Network error.</span>`);
       });
-    }
-    refreshStatus();
+    });
   }
 
-  // ---------- Initialize ----------
   renderMember();
-  renderAdminLogin();
+  renderAdmin();
+  renderReveal();
 });
-
-
