@@ -109,7 +109,7 @@ $(function () {
             </div>
           </form>
           <div id="memberMsg" class="mt-2"></div>
-          <p class="mt-3 text-muted small">Names are removed from the pool once claimed. No list is shown.</p>
+          <p class="mt-3 text-muted small">If anyone shares the same first name please add an initial at the end as well. Names are removed from the pool once claimed. No list is shown.</p>
         </div>
       </div>`;
     $('#memberSection').html(html);
@@ -168,4 +168,5 @@ $(function () {
   renderAdmin();
   renderReveal();
 });
+
 
