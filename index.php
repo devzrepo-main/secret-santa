@@ -40,7 +40,7 @@
 
   <div class="container py-5 text-center">
     <h2 class="mb-4 text-success" style="text-shadow: 2px 2px 5px black;">
-      🎅 Welcome to the Secret Santa Christmas Edition 🎄
+      🎅 'Tis The Season 🎄
     </h2>
 
     <!-- Member Claim Section -->
@@ -62,4 +62,5 @@
   </div>
 </body>
 </html>
+
 
