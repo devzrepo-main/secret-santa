@@ -1,4 +1,4 @@
-/* === Christmas Theme (Full Viewport Snowfall + Lights + Glow) === */
+/* === Christmas Theme (Fixed + Animated + Twinkling Lights + Snowfall) === */
 body {
   background: radial-gradient(circle at top, #b31217 0%, #e52d27 40%, #8b0000 100%);
   background-attachment: fixed;
@@ -9,7 +9,7 @@ body {
   position: relative;
 }
 
-/* --- Twinkling Christmas Lights --- */
+/* --- Twinkling Lights --- */
 .lights {
   position: fixed;
   top: 0;
@@ -34,62 +34,67 @@ body {
   transform: rotate(180deg);
 }
 
-.bulb:nth-child(2n) { background: yellow; box-shadow: 0 0 10px yellow; animation-delay: .3s; }
-.bulb:nth-child(3n) { background: green;  box-shadow: 0 0 10px green;  animation-delay: .6s; }
-.bulb:nth-child(4n) { background: blue;   box-shadow: 0 0 10px blue;   animation-delay: .9s; }
-
-@keyframes blink {
-  0%,100% { opacity: 1; box-shadow: 0 0 15px currentColor; }
-  50%     { opacity: .4; box-shadow: 0 0 5px currentColor; }
+.bulb:nth-child(2n) {
+  background: yellow;
+  box-shadow: 0 0 10px yellow;
+  animation-delay: 0.3s;
 }
 
-/* --- Full-Viewport Falling Snow --- */
+.bulb:nth-child(3n) {
+  background: green;
+  box-shadow: 0 0 10px green;
+  animation-delay: 0.6s;
+}
+
+.bulb:nth-child(4n) {
+  background: blue;
+  box-shadow: 0 0 10px blue;
+  animation-delay: 0.9s;
+}
+
+@keyframes blink {
+  0% { opacity: 1; box-shadow: 0 0 15px currentColor; }
+  50% { opacity: 0.4; box-shadow: 0 0 5px currentColor; }
+  100% { opacity: 1; box-shadow: 0 0 15px currentColor; }
+}
+
+/* --- Snow Animation --- */
 .snowflake {
   position: fixed;
   top: -10px;
   color: #fff;
-  opacity: 0.9;
-  font-size: 1rem;
-  pointer-events: none;
   user-select: none;
-  z-index: 99999;
-  animation-name: snowFall, snowDrift;
-  animation-iteration-count: infinite, infinite;
+  z-index: 9999;
+  opacity: 0.9;
+  pointer-events: none;
+  animation-name: fall, sway;
+  animation-iteration-count: infinite;
   animation-timing-function: linear, ease-in-out;
 }
 
-/* Vertical fall down the whole viewport */
-@keyframes snowFall {
-  0%   { transform: translateY(-10px); opacity: 1; }
-  100% { transform: translateY(110vh); opacity: 0.7; }
+@keyframes fall {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(100vh); opacity: 0; }
 }
 
-/* Horizontal side drift */
-@keyframes snowDrift {
+@keyframes sway {
   0%, 100% { transform: translateX(0); }
-  50%      { transform: translateX(50px); }
+  50% { transform: translateX(40px); }
 }
 
-/* Variation by element order for realism */
 .snowflake:nth-child(odd) {
   font-size: 18px;
   animation-duration: 10s, 5s;
-  animation-delay: 0s, 1s;
 }
 .snowflake:nth-child(even) {
   font-size: 12px;
-  animation-duration: 15s, 7s;
-  animation-delay: 2s, 0s;
+  animation-duration: 14s, 7s;
 }
-.snowflake:nth-child(3n) {
-  font-size: 22px;
-  animation-duration: 20s, 10s;
-  animation-delay: 3s, 2s;
-}
-.snowflake:nth-child(4n) {
-  font-size: 14px;
-  animation-duration: 25s, 12s;
-  animation-delay: 1s, 3s;
+
+/* --- Headings --- */
+.text-christmas {
+  color: #00ff90;
+  text-shadow: 2px 2px 3px #000;
 }
 
 /* --- Cards --- */
@@ -100,69 +105,67 @@ body {
   box-shadow: 0 0 25px rgba(255, 255, 255, 0.25);
 }
 
-/* --- Headings --- */
-h2, h5, .card-title {
-  font-weight: 700;
-}
-
 /* --- Buttons --- */
-.btn-success, .btn-primary {
-  background-color: #198754 !important;
-  border: none !important;
-  color: #fff !important;
-  box-shadow: 0 0 8px rgba(25,135,84,0.6);
-  transition: all 0.2s ease-in-out;
+.btn-success {
+  background-color: #198754;
+  border: none;
 }
-.btn-success:hover, .btn-primary:hover {
-  background-color: #146c43 !important;
-  box-shadow: 0 0 12px rgba(20,108,67,0.8);
-  transform: scale(1.03);
+.btn-success:hover {
+  background-color: #146c43;
 }
-.btn-outline-danger {
-  border-color: #ff4b4b;
-  color: #ff4b4b;
-}
-.btn-outline-danger:hover {
-  background-color: #ff4b4b;
+
+/* --- Christmas Footer --- */
+.christmas-footer {
+  background: linear-gradient(to bottom, #b31217 0%, #e52d27 40%, #8b0000 100%);
+  border-top: 2px solid gold;
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
   color: #fff;
+  text-shadow: 1px 1px 2px #000;
+  font-family: 'Poppins', sans-serif;
+  position: relative;
+  overflow: hidden;
 }
 
-/* --- Glowing Green Title with Black Outline --- */
-.glow-green {
-  color: #198754;
-  text-shadow:
-    0 0 5px #198754,
-    0 0 15px #28a745,
-    0 0 25px #28a745,
-    2px 2px 2px #000,
-    -2px -2px 2px #000,
-    2px -2px 2px #000,
-    -2px 2px 2px #000;
-  animation: glowPulse 2s ease-in-out infinite alternate;
+.footer-text {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
 }
 
-@keyframes glowPulse {
-  from {
-    text-shadow:
-      0 0 5px #198754,
-      0 0 10px #28a745,
-      2px 2px 2px #000,
-      -2px -2px 2px #000,
-      2px -2px 2px #000,
-      -2px 2px 2px #000;
-  }
-  to {
-    text-shadow:
-      0 0 20px #28a745,
-      0 0 40px #198754,
-      2px 2px 2px #000,
-      -2px -2px 2px #000,
-      2px -2px 2px #000,
-      -2px 2px 2px #000;
-  }
+/* --- Spotify Frame --- */
+.spotify-frame {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* --- Footer --- */
-footer {
-  color: rgba(255, 255, 255, 0.8);
+.spotify-frame iframe {
+  border: 2px solid gold;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+  max-width: 420px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.spotify-frame iframe:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 35px rgba(255, 255, 255, 0.5);
+}
+
+/* --- Subtle twinkle effect --- */
+.christmas-footer::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.15) 1%, transparent 1%) repeat;
+  background-size: 4px 4px;
+  animation: twinkle 6s infinite linear;
+  pointer-events: none;
+}
+
+@keyframes twinkle {
+  from { transform: translate(0, 0); }
+  to { transform: translate(10px, 10px); }
 }
