@@ -123,6 +123,20 @@ if ($action === 'reveal_final') {
   exit;
 }
 
+/* ---------- ADMIN LOGIN ---------- */
+if ($action === 'admin_login') {
+  $password = $_POST['password'] ?? '';
+  $adminPassword = 'Secret123'; // The correct password
+  if ($password === $adminPassword) {
+    echo json_encode(['ok' => true, 'message' => 'Admin login successful']);
+  } else {
+    echo json_encode(['ok' => false, 'error' => 'Invalid admin password']);
+  }
+  exit;
+}
+
+
 /* ---------- DEFAULT ---------- */
 echo json_encode(['error' => 'No valid action']);
 ?>
+
