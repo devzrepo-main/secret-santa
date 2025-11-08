@@ -1,0 +1,8 @@
+CREATE DATABASE IF NOT EXISTS secret_santa;
+USE secret_santa;
+CREATE TABLE IF NOT EXISTS family_members (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE,
+    assigned_to VARCHAR(50) DEFAULT NULL
+);
+

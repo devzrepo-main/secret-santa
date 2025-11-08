@@ -1,0 +1,168 @@
+/* === Christmas Theme (Full Viewport Snowfall + Lights + Glow) === */
+body {
+  background: radial-gradient(circle at top, #b31217 0%, #e52d27 40%, #8b0000 100%);
+  background-attachment: fixed;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* --- Twinkling Christmas Lights --- */
+.lights {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-end;
+  z-index: 10000;
+  pointer-events: none;
+}
+
+.bulb {
+  width: 16px;
+  height: 28px;
+  border-radius: 50% 50% 45% 45%;
+  background: red;
+  box-shadow: 0 0 10px red;
+  animation: blink 1.5s infinite alternate;
+  transform-origin: top center;
+  transform: rotate(180deg);
+}
+
+.bulb:nth-child(2n) { background: yellow; box-shadow: 0 0 10px yellow; animation-delay: .3s; }
+.bulb:nth-child(3n) { background: green;  box-shadow: 0 0 10px green;  animation-delay: .6s; }
+.bulb:nth-child(4n) { background: blue;   box-shadow: 0 0 10px blue;   animation-delay: .9s; }
+
+@keyframes blink {
+  0%,100% { opacity: 1; box-shadow: 0 0 15px currentColor; }
+  50%     { opacity: .4; box-shadow: 0 0 5px currentColor; }
+}
+
+/* --- Full-Viewport Falling Snow --- */
+.snowflake {
+  position: fixed;
+  top: -10px;
+  color: #fff;
+  opacity: 0.9;
+  font-size: 1rem;
+  pointer-events: none;
+  user-select: none;
+  z-index: 99999;
+  animation-name: snowFall, snowDrift;
+  animation-iteration-count: infinite, infinite;
+  animation-timing-function: linear, ease-in-out;
+}
+
+/* Vertical fall down the whole viewport */
+@keyframes snowFall {
+  0%   { transform: translateY(-10px); opacity: 1; }
+  100% { transform: translateY(110vh); opacity: 0.7; }
+}
+
+/* Horizontal side drift */
+@keyframes snowDrift {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(50px); }
+}
+
+/* Variation by element order for realism */
+.snowflake:nth-child(odd) {
+  font-size: 18px;
+  animation-duration: 10s, 5s;
+  animation-delay: 0s, 1s;
+}
+.snowflake:nth-child(even) {
+  font-size: 12px;
+  animation-duration: 15s, 7s;
+  animation-delay: 2s, 0s;
+}
+.snowflake:nth-child(3n) {
+  font-size: 22px;
+  animation-duration: 20s, 10s;
+  animation-delay: 3s, 2s;
+}
+.snowflake:nth-child(4n) {
+  font-size: 14px;
+  animation-duration: 25s, 12s;
+  animation-delay: 1s, 3s;
+}
+
+/* --- Cards --- */
+.card {
+  border-radius: 1rem;
+  background-color: rgba(255, 255, 255, 0.97);
+  color: #222;
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.25);
+}
+
+/* --- Headings --- */
+h2, h5, .card-title {
+  font-weight: 700;
+}
+
+/* --- Buttons --- */
+.btn-success, .btn-primary {
+  background-color: #198754 !important;
+  border: none !important;
+  color: #fff !important;
+  box-shadow: 0 0 8px rgba(25,135,84,0.6);
+  transition: all 0.2s ease-in-out;
+}
+.btn-success:hover, .btn-primary:hover {
+  background-color: #146c43 !important;
+  box-shadow: 0 0 12px rgba(20,108,67,0.8);
+  transform: scale(1.03);
+}
+.btn-outline-danger {
+  border-color: #ff4b4b;
+  color: #ff4b4b;
+}
+.btn-outline-danger:hover {
+  background-color: #ff4b4b;
+  color: #fff;
+}
+
+/* --- Glowing Green Title with Black Outline --- */
+.glow-green {
+  color: #198754;
+  text-shadow:
+    0 0 5px #198754,
+    0 0 15px #28a745,
+    0 0 25px #28a745,
+    2px 2px 2px #000,
+    -2px -2px 2px #000,
+    2px -2px 2px #000,
+    -2px 2px 2px #000;
+  animation: glowPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes glowPulse {
+  from {
+    text-shadow:
+      0 0 5px #198754,
+      0 0 10px #28a745,
+      2px 2px 2px #000,
+      -2px -2px 2px #000,
+      2px -2px 2px #000,
+      -2px 2px 2px #000;
+  }
+  to {
+    text-shadow:
+      0 0 20px #28a745,
+      0 0 40px #198754,
+      2px 2px 2px #000,
+      -2px -2px 2px #000,
+      2px -2px 2px #000,
+      -2px 2px 2px #000;
+  }
+}
+
+/* --- Footer --- */
+footer {
+  color: rgba(255, 255, 255, 0.8);
+}

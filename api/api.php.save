@@ -1,0 +1,84 @@
+sudo nano /var/www/html/secret-santa/api/api.php
+<?php
+$conn = new mysqli("localhost","root","","secret_santa");
+header('Content-Type: application/json');
+
+function esc($str) { global $conn; return $conn->real_escape_string(trim($str)); }
+
+$action = $_POST['action'] ?? $_GET['action'] ?? '';
+
+if($action == 'list'){
+    $member_name = $_GET['member'] ?? '';
+    $res = $conn->query("SELECT name FROM family_members WHERE name != '".esc($member_name)."'");
+    $members = [];
+    while($row = $res->fetch_assoc()) $members[] = $row;
+    echo json_encode(['members'=>$members]);
+    exit;
+}
+
+if(isset($_POST['name']) && isset($_POST['add_member'])){
+    $name = esc($_POST['name']);
+    $stmt = $conn->prepare("INSERT INTO family_members (name) VALUES (?)");
+    $stmt->bind_param("s",$name);
+    $stmt->execute();
+    echo json_encode(['message'=>"Member $name added!"]);
+    exit;
+}
+
+if(isset($_POST['member']) && isset($_POST['assigned_to'])){
+    $member = esc($_POST['member']);
+    $assigned_to = esc($_POST['assigned_to']);    $res = $conn->query("SELECT assigned_to FROM family_members WHERE name='$member'");<?php
+$conn = new mysqli("localhost","root","","secret_santa");
+header('Content-Type: application/json');
+
+function esc($str) { global $conn; return $conn->real_escape_string(trim($str)); }
+
+$action = $_POST['action'] ?? $_GET['action'] ?? '';
+
+if($action == 'list'){
+    $member_name = $_GET['member'] ?? '';
+    $res = $conn->query("SELECT name FROM family_members WHERE name != '".esc($member_name)."'");
+    $members = [];
+    while($row = $res->fetch_assoc()) $members[] = $row;
+    echo json_encode(['members'=>$members]);
+    exit;
+}
+
+if(isset($_POST['name']) && isset($_POST['add_member'])){
+    $name = esc($_POST['name']);
+    $stmt = $conn->prepare("INSERT INTO family_members (name) VALUES (?)");
+    $stmt->bind_param("s",$name);
+    $stmt->execute();
+    echo json_encode(['message'=>"Member $name added!"]);
+    exit;
+}
+
+if(isset($_POST['member']) && isset($_POST['assigned_to'])){
+    $member = esc($_POST['member']);
+    $assigned_to = esc($_POST['assigned_to']);
+    $res = $conn->query("SELECT assigned_to FROM family_members WHERE name='$member'");
+    $already = $res->fetch_assoc()['assigned_to'];
+    if($already){
+        echo json_encode(['message'=>"You already submitted your assignment!"]);
+        exit;
+    }
+    $stmt = $conn->prepare("UPDATE family_members SET assigned_to=? WHERE name=?");
+    $stmt->bind_param("ss", $assigned_to, $member);
+    $stmt->execute();
+    echo json_encode(['message'=>"Assignment saved for $member!"]);
+    exit;
+}
+
+if($action == 'reveal'){
+    $res = $conn->query("SELECT * FROM family_members ORDER BY id DESC LIMIT 1");
+    $last = $res->fetch_assoc();
+    $member_name = esc($_POST['member'] ?? '');
+    if($member_name != $last['name']){
+        echo json_encode(['assigned_to'=>null, 'message'=>'Only the last member can reveal their assignment!']);
+        exit;
+    }
+    echo json_encode(['assigned_to'=>$last['assigned_to']]);
+    exit;
+}
+?>
+

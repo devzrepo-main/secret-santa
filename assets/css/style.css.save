@@ -1,0 +1,16 @@
+ody {
+    background: url('https://i.imgur.com/2Q9cZ3H.png') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+.container {
+    margin-top: 50px;
+    background-color: rgba(0,0,0,0.6);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px #ff0000;
+}
+h2, h3 { color: #ff0000; text-shadow: 1px 1px 2px #00ff00; }
+button { background-color: #ff0000; border-color: #00ff00; color: #fff; }
+
