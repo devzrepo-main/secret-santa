@@ -9,11 +9,11 @@ $(function () {
           <h5 class="card-title mb-3 text-success">Merry Christmas!</h5>
           <form id="claimForm" class="row g-3">
             <div class="col-md-6">
-              <label class="form-label">Your name (The Secret Santa)</label>
+              <label class="form-label">Your name (The Secret Santa):</label>
               <input type="text" class="form-control" id="memberName" placeholder="Type your name" />
             </div>
             <div class="col-md-6">
-              <label class="form-label">The person you were assigned to</label>
+              <label class="form-label">The person you were assigned to:</label>
               <input type="text" class="form-control" id="assignedTo" placeholder="Type the name you drew" />
             </div>
             <div class="col-12 d-grid">
@@ -175,4 +175,5 @@ $(function () {
   renderReveal();
   renderAdmin();
 });
+
 
