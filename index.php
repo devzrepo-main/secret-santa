@@ -12,13 +12,13 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap">
 
   <!-- Custom Christmas CSS -->
-  <link rel="stylesheet" href="/var/www/html/secret-santa/assets/css/christmas.css?v=6">
+  <link rel="stylesheet" href="assets/css/christmas.css?v=6">
 
   <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <!-- Main App -->
-  <script src="/var/www/html/secret-santa/assets/app.js?v=12"></script>
+  <script src="assets/app.js?v=12"></script>
 </head>
 
 <body>
@@ -52,13 +52,12 @@
     <!-- Admin Panel Section -->
     <div id="adminWrapper" class="mb-4"></div>
 
-    <!-- Footer -->
     <footer class="mt-5">
       <p>Made with ❤️ and Christmas cheer ✨</p>
-      <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX0Yxoavh5qJV?utm_source=generator" 
+      <iframe style="border-radius:12px"
+        src="https://open.spotify.com/embed/playlist/37i9dQZF1DX0Yxoavh5qJV?utm_source=generator"
         width="100%" height="80" frameBorder="0" allowfullscreen=""
-        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy">
-      </iframe>
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
     </footer>
   </div>
 </body>
