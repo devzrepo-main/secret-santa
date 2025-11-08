@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>🎅 Secret Santa Christmas Edition 🎄</title>
+  <title> Secret Santa Christmas Edition </title>
 
   <!-- Bootstrap -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
@@ -11,14 +11,14 @@
   <!-- Google Fonts -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap">
 
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="assets/css/christmas.css?v=7">
+  <!-- Custom Christmas CSS -->
+  <link rel="stylesheet" href="/assets/css/christmas.css?v=5">
 
   <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-  <!-- App Logic -->
-  <script src="assets/app.js?v=11"></script>
+  <!-- Main App -->
+  <script src="/assets/app.js?v=10"></script>
 </head>
 
 <body>
@@ -29,7 +29,7 @@
     <?php endfor; ?>
   </div>
 
-  <!-- ❄️ Falling Snowflakes -->
+  <!-- ❄️ Falling Snow -->
   <?php for ($i = 0; $i < 40; $i++): ?>
     <div class="snowflake" style="
       left:<?= rand(0, 100) ?>%;
@@ -38,15 +38,25 @@
     ">❆</div>
   <?php endfor; ?>
 
-  <!-- 🎁 Main Content -->
-  <div class="container py-5 text-center">
-    <h2 class="mb-4 glow-green">Welcome to the Secret Santa Christmas Edition!</h2>
-    <div id="memberSection" class="mb-5"></div>
-    <div id="adminSection"></div>
+  <div class="container text-center py-5">
+    <h1 class="display-4 fw-bold text-christmas mt-4">🎅 Welcome to the Secret Santa Christmas Edition 🎄</h1>
+    <p class="lead text-light">Spread joy, share gifts, and enjoy the holiday magic!</p>
+
+    <div id="memberSection" class="mt-5"></div>
+    <div id="adminSection" class="mt-5"></div>
   </div>
 
-  <footer class="text-center py-4">
-    <p>Made with ❤️ & Christmas cheer 🎁</p>
+  <!--  Festive Footer with Spotify Playlist -->
+  <footer class="text-center mt-5 py-5 christmas-footer">
+    <p class="footer-text"> Made with Christmas Cheer </p>
+
+    <div class="spotify-frame">
+      <iframe style="border-radius:12px" 
+        src="https://open.spotify.com/embed/playlist/37i9dQZF1DX0Yxoavh5qJV?utm_source=generator"
+        width="80%" height="152" frameBorder="0" 
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+      </iframe>
+    </div>
   </footer>
 </body>
 </html>
