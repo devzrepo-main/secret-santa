@@ -165,8 +165,9 @@ $(function () {
   }
 
   renderMember();
-  renderAdmin();
   renderReveal();
+  renderAdmin();
 });
+
 
 
