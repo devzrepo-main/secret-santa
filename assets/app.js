@@ -1,36 +1,62 @@
 $(function () {
   const API = 'api/api.php';
+  let adminLoggedIn = false;
 
-  // ---------- Admin: Manage Family Members (View + Add)
+  // ---------- Admin: Secure Login + Manage Family Members ----------
   function renderAdmin() {
     const html = `
       <div class="card shadow-sm mb-4">
         <div class="card-body">
-          <h5 class="card-title mb-3">Admin: Manage Family Members</h5>
-          <form id="addForm" class="row g-2">
-            <div class="col-sm-8">
-              <input type="text" class="form-control" id="addName" placeholder="Enter a name (e.g., Alice)" />
-            </div>
-            <div class="col-sm-4 d-grid">
-              <button class="btn btn-success" type="submit">Add</button>
-            </div>
-          </form>
-          <div id="adminMsg" class="mt-2 small"></div>
-          <div id="adminList" class="mt-3"></div>
+          <h5 class="card-title mb-3">Admin Panel</h5>
+          <button id="adminLogin" class="btn btn-success mb-3">Admin Login</button>
+          <div id="adminContent" style="display:none;">
+            <form id="addForm" class="row g-2">
+              <div class="col-sm-8">
+                <input type="text" class="form-control" id="addName" placeholder="Enter a name (e.g., Alice)" />
+              </div>
+              <div class="col-sm-4 d-grid">
+                <button class="btn btn-success" type="submit">Add</button>
+              </div>
+            </form>
+            <div id="adminMsg" class="mt-2 small"></div>
+            <div id="adminList" class="mt-3"></div>
+          </div>
         </div>
       </div>`;
     $('#adminSection').html(html);
 
-    // Add member
-    $('#addForm').on('submit', function (e) {
+    // Admin login button
+    $('#adminLogin').on('click', function () {
+      const password = prompt('Enter the admin password:');
+      if (!password) return;
+
+      $.post(API, { action: 'admin_login', password }, function (res) {
+        if (res.ok) {
+          adminLoggedIn = true;
+          $('#adminLogin').hide();
+          $('#adminContent').slideDown();
+          refreshList();
+        } else {
+          alert('Invalid admin password.');
+        }
+      }, 'json').fail(() => alert('Network error.'));
+    });
+
+    // Add member (only if logged in)
+    $('#adminSection').on('submit', '#addForm', function (e) {
       e.preventDefault();
+      if (!adminLoggedIn) {
+        $('#adminMsg').html(`<span class="text-danger">Unauthorized: please log in first.</span>`);
+        return;
+      }
+
       const name = ($('#addName').val() || '').trim();
       if (!name) {
         $('#adminMsg').html(`<span class="text-danger">Please enter a name.</span>`);
         return;
       }
 
-      $.post(API, { action: 'add_member', name }, function (res) {
+      $.post(API, { action: 'add_member', name, password: 'Secret123' }, function (res) {
         if (res.ok) {
           $('#adminMsg').html(`<span class="text-success">${res.message}</span>`);
           $('#addName').val('');
@@ -43,30 +69,24 @@ $(function () {
       });
     });
 
-    // Load list of members
+    // Fetch the list of members
     function refreshList() {
       $.getJSON(API, { action: 'status' }, function (res) {
         if (res.ok) {
-          const names = res.remaining;
-          if (names.length === 0) {
+          const members = res.remaining;
+          if (members.length === 0) {
             $('#adminList').html('<p class="text-muted mt-2">No family members added yet.</p>');
           } else {
-            const list = names.map(n => `<li class="list-group-item">${n}</li>`).join('');
-            $('#adminList').html(`
-              <ul class="list-group list-group-flush mt-3">
-                ${list}
-              </ul>
-            `);
+            const list = members.map(n => `<li class="list-group-item">${n}</li>`).join('');
+            $('#adminList').html(`<ul class="list-group list-group-flush mt-3">${list}</ul>`);
           }
         } else {
-          $('#adminList').html('<p class="text-danger mt-2">Unable to load members.</p>');
+          $('#adminList').html('<p class="text-danger mt-2">Error loading member list.</p>');
         }
       }).fail(() => {
-        $('#adminList').html('<p class="text-danger mt-2">Network error loading members.</p>');
+        $('#adminList').html('<p class="text-danger mt-2">Network error loading list.</p>');
       });
     }
-
-    refreshList();
   }
 
   // ---------- Member: Claim Secret Santa ----------
