@@ -22,7 +22,7 @@ $(function () {
           </form>
           <div id="memberMsg" class="mt-2"></div>
           <p class="mt-3 text-muted small">
-            Note: Names are removed from the pool as soon as they’re claimed. No list is shown.
+            For people with the same name please include your initial next to your name. Note: Names are removed from the pool as soon as they’re claimed. No list is shown.
           </p>
         </div>
       </div>`;
@@ -175,5 +175,6 @@ $(function () {
   renderReveal();
   renderAdmin();
 });
+
 
 
