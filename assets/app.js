@@ -137,16 +137,18 @@ $(function () {
   }
 
   // ---------- Admin Final Reveal ----------
+  // ---------- Admin Final Reveal (Password Protected) ----------
   function renderReveal() {
     const html = `
-      <div class="card shadow-sm mt-4 border-danger">
+      <div id="revealSection" class="card shadow-sm mt-4 border-danger">
         <div class="card-body">
-          <h5 class="card-title text-danger">Alex's Reveal</h5>
+          <h5 class="card-title text-danger">Final Reveal (Admin Only)</h5>
           <button id="revealBtn" class="btn btn-success">Reveal Remaining Name</button>
           <div id="revealMsg" class="mt-3"></div>
         </div>
       </div>`;
-    $('#adminSection').append(html);
+    // Make sure it renders BEFORE the admin section now
+    $('#adminSection').before(html);
 
     $('#revealBtn').on('click', function () {
       const password = prompt('Enter the admin password:');
@@ -164,10 +166,12 @@ $(function () {
     });
   }
 
+
   renderMember();
   renderReveal();
   renderAdmin();
 });
+
 
 
 
