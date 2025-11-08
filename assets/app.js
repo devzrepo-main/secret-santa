@@ -14,7 +14,7 @@ $(function () {
               <input type="text" class="form-control" id="memberName" placeholder="Type your name" />
             </div>
             <div class="col-md-6">
-              <label class="form-label">Who are you assigned as Secret Santa to?</label>
+              <label class="form-label">Who were you assigned as Secret Santa to?</label>
               <input type="text" class="form-control" id="assignedTo" placeholder="Type the name you drew" />
             </div>
             <div class="col-12 d-grid">
@@ -156,4 +156,5 @@ $(function () {
   renderMember();
   renderAdminLogin();
 });
+
 
