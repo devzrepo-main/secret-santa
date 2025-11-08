@@ -12,13 +12,13 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap">
 
   <!-- Custom Christmas CSS -->
-  <link rel="stylesheet" href="/assets/css/christmas.css?v=5">
+  <link rel="stylesheet" href="assets/css/christmas.css?v=5">
 
   <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <!-- Main App -->
-  <script src="/assets/app.js?v=10"></script>
+  <script src="assets/app.js?v=10"></script>
 </head>
 
 <body>
@@ -60,3 +60,4 @@
   </footer>
 </body>
 </html>
+
