@@ -142,7 +142,7 @@ $(function () {
     const html = `
       <div id="revealSection" class="card shadow-sm mt-4 border-danger">
         <div class="card-body">
-          <h5 class="card-title text-danger">Final Reveal (Admin Only)</h5>
+          <h5 class="card-title text-danger">Alex's Reveal</h5>
           <button id="revealBtn" class="btn btn-success">Reveal Remaining Name</button>
           <div id="revealMsg" class="mt-3"></div>
         </div>
@@ -171,6 +171,7 @@ $(function () {
   renderReveal();
   renderAdmin();
 });
+
 
 
 
