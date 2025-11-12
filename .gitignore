@@ -1,0 +1,19 @@
+# Ignore configuration and sensitive files
+config.php
+dbtest.php
+
+# Ignore environment-specific files
+.env
+*.log
+
+# Ignore OS or editor junk
+.DS_Store
+Thumbs.db
+
+# Ignore backup and cache
+*.bak
+*.zip
+*.tar
+*.gz
+node_modules/
+vendor/
