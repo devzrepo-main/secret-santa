@@ -10,11 +10,11 @@ $(function () {
           <h5 class="card-title mb-3">Merry Christmas!</h5>
           <form id="claimForm" class="row g-3">
             <div class="col-md-6">
-              <label>Your name</label>
+              <label>Your name (The Secret Santa):</label>
               <input id="memberName" class="form-control" />
             </div>
             <div class="col-md-6">
-              <label>The person you drew</label>
+              <label>The person you drew:</label>
               <input id="assignedTo" class="form-control" />
             </div>
             <div class="col-12 d-grid">
@@ -22,6 +22,9 @@ $(function () {
             </div>
           </form>
           <div id="memberMsg" class="mt-2"></div>
+           <p class="mt-3 text-muted small">
+            For people with the same name please include your initial next to your name. Note: Names are removed from the pool as soon as they’re claimed. No list is shown.
+          </p>
         </div>
       </div>`;
     $('#memberSection').html(html);
@@ -140,7 +143,7 @@ $(function () {
     const html = `
       <div class="card shadow-sm border-danger mt-4">
         <div class="card-body">
-          <h5 class="card-title text-danger">Final Reveal</h5>
+          <h5 class="card-title text-danger">Alex's Final Reveal</h5>
           <button id="revealBtn" class="btn btn-success">Reveal Final Name</button>
           <div id="revealMsg" class="mt-3"></div>
         </div>
@@ -166,3 +169,4 @@ $(function () {
   renderReveal();
   renderAdmin();
 });
+
