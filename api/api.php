@@ -1,23 +1,22 @@
 <?php
-header("Content-Type: application/json");
 require_once("../config.php");
+header("Content-Type: application/json");
 
-$ADMIN_PASS = "Secret123";  // Admin password
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
+$ADMIN_PASSWORD = "Secret123";   // ← FINAL WORKING PASSWORD
 
-/* ------------------------------------------
-   ADD MEMBER (Admin)
-------------------------------------------- */
+/* --------------------- ADD MEMBER --------------------- */
 if ($action === 'add_member') {
-    $password = $_POST['password'] ?? '';
-    $name     = trim($_POST['name'] ?? '');
 
-    if ($password !== $ADMIN_PASS) {
-        echo json_encode(['ok'=>false, 'error'=>'Invalid admin password']);
+    $password = $_POST['password'] ?? '';
+    if ($password !== $ADMIN_PASSWORD) {
+        echo json_encode(['error' => 'Unauthorized: invalid admin password.']);
         exit;
     }
+
+    $name = trim($_POST['name'] ?? '');
     if ($name === '') {
-        echo json_encode(['ok'=>false, 'error'=>'Name cannot be empty']);
+        echo json_encode(['error' => 'No name provided.']);
         exit;
     }
 
@@ -25,50 +24,48 @@ if ($action === 'add_member') {
     $stmt->bind_param("s", $name);
 
     if ($stmt->execute()) {
-        echo json_encode(['ok'=>true, 'message'=>"$name added"]);
+        echo json_encode(['ok' => true, 'message' => 'Member added successfully!']);
     } else {
-        echo json_encode(['ok'=>false, 'error'=>'Duplicate or database error']);
+        echo json_encode(['error' => 'Error: duplicate or failed to add.']);
     }
     exit;
 }
 
-/* ------------------------------------------
-   REMOVE MEMBER (Admin)
-------------------------------------------- */
+/* --------------------- REMOVE MEMBER --------------------- */
 if ($action === 'remove_member') {
-    $password = $_POST['password'] ?? '';
-    $name     = trim($_POST['name'] ?? '');
 
-    if ($password !== $ADMIN_PASS) {
-        echo json_encode(['ok'=>false, 'error'=>'Invalid admin password']);
+    $password = $_POST['password'] ?? '';
+    if ($password !== $ADMIN_PASSWORD) {
+        echo json_encode(['error' => 'Unauthorized: invalid admin password.']);
         exit;
     }
+
+    $name = trim($_POST['name'] ?? '');
+
     if ($name === '') {
-        echo json_encode(['ok'=>false, 'error'=>'No name provided']);
+        echo json_encode(['error' => 'No name provided.']);
         exit;
     }
 
     $stmt = $conn->prepare("DELETE FROM family_members WHERE TRIM(name)=? LIMIT 1");
     $stmt->bind_param("s", $name);
-    $stmt->execute();
 
-    if ($stmt->affected_rows > 0) {
-        echo json_encode(['ok'=>true, 'message'=>"$name removed"]);
+    if ($stmt->execute() && $stmt->affected_rows > 0) {
+        echo json_encode(['ok' => true, 'message' => 'Member removed successfully!']);
     } else {
-        echo json_encode(['ok'=>false, 'error'=>'Name not found']);
+        echo json_encode(['error' => 'Member not found.']);
     }
     exit;
 }
 
-/* ------------------------------------------
-   CLAIM SECRET SANTA (User)
-------------------------------------------- */
+/* --------------------- CLAIM SECRET SANTA --------------------- */
 if ($action === 'claim') {
-    $member      = trim($_POST['member'] ?? '');
+
+    $member = trim($_POST['member'] ?? '');
     $assigned_to = trim($_POST['assigned_to'] ?? '');
 
     if ($member === '' || $assigned_to === '') {
-        echo json_encode(['ok'=>false, 'error'=>"Both fields required"]);
+        echo json_encode(['error' => 'Missing fields.']);
         exit;
     }
 
@@ -76,49 +73,51 @@ if ($action === 'claim') {
     $stmt->bind_param("s", $member);
     $stmt->execute();
 
-    echo json_encode(['ok'=>true, 'message'=>"Assignment recorded"]);
+    echo json_encode(['ok' => true, 'message' => '🎁 Secret Santa recorded!']);
     exit;
 }
 
-/* ------------------------------------------
-   STATUS (Remaining List)
-------------------------------------------- */
+/* --------------------- STATUS --------------------- */
 if ($action === 'status') {
     $res = $conn->query("SELECT name FROM family_members WHERE claimed=0 ORDER BY name");
+
+    $remaining = [];
+    while ($row = $res->fetch_assoc()) {
+        $remaining[] = $row['name'];
+    }
+    echo json_encode(['ok' => true, 'remaining' => $remaining]);
+    exit;
+}
+
+/* --------------------- FINAL REVEAL --------------------- */
+if ($action === 'reveal_final') {
+
+    $password = $_POST['password'] ?? '';
+    if ($password !== $ADMIN_PASSWORD) {
+        echo json_encode(['error' => 'Unauthorized: invalid admin password.']);
+        exit;
+    }
+
+    $res = $conn->query("SELECT name FROM family_members WHERE claimed=0");
     $remaining = [];
 
     while ($row = $res->fetch_assoc()) {
         $remaining[] = $row['name'];
     }
-    echo json_encode(['ok'=>true, 'remaining'=>$remaining]);
-    exit;
-}
 
-/* ------------------------------------------
-   FINAL REVEAL (Admin)
-------------------------------------------- */
-if ($action === 'reveal_final') {
-    $password = $_POST['password'] ?? '';
-
-    if ($password !== $ADMIN_PASS) {
-        echo json_encode(['ok'=>false, 'error'=>'Invalid admin password']);
+    if (count($remaining) === 1) {
+        echo json_encode(['ok' => true, 'final_unclaimed' => $remaining[0]]);
         exit;
     }
 
-    $query = $conn->query("SELECT name FROM family_members WHERE claimed=0");
-    $remaining = [];
-    while ($row = $query->fetch_assoc()) $remaining[] = $row['name'];
-
-    if (count($remaining) === 1) {
-        echo json_encode(['ok'=>true, 'final_unclaimed'=>$remaining[0]]);
-    } else {
-        echo json_encode(['ok'=>false, 'error'=>'Reveal only allowed when 1 name remains']);
+    if (count($remaining) > 1) {
+        echo json_encode(['error' => 'Not all members have submitted yet.']);
+        exit;
     }
+
+    echo json_encode(['error' => 'No remaining names.']);
     exit;
 }
 
-/* ------------------------------------------
-   INVALID ACTION FALLBACK
-------------------------------------------- */
-echo json_encode(['ok'=>false, 'error'=>'No valid action']);
+echo json_encode(['error' => 'No valid action.']);
 ?>
