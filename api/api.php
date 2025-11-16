@@ -18,7 +18,7 @@ function notifyAdminFinalReveal($remainingName) {
 
     $subject = "🎄 Secret Santa: Final Name Revealed!";
     $message = "Hello Alex,\n\n"
-             . "There is now ONLY ONE name left in the Secret Santa pool.\n"
+             . "There is now ONLY ONE name left in the Secret Santa pool. Please confirm the information below is correcgt on the website as well.\n"
              . "The remaining unassigned person is:\n\n"
              . "➡ $remainingName\n\n"
              . "This message was automatically sent when the pool reached 1 name.\n\n"
@@ -234,3 +234,4 @@ if ($action === 'reveal_final') {
    ============================================================ */
 echo json_encode(['error' => 'No valid action']);
 exit;
+
